@@ -1,0 +1,64 @@
+!!! 5
+%html{:lang => "en"}
+  %head
+    %meta{:charset => "utf-8"}/
+    %meta{"http-equiv" => "X-UA-Compatible", :content => "IE-edge"}/
+    %meta{"name" => "viewport", :content => "width=device-width, initial-scale=1"}/
+    %meta{"name" => "description", "content" => ""}/
+    %meta{"name" => "author", "content" => ""}/
+    %meta{name: "pdfkit-page_size", content: "Letter"}
+    %meta{name: "pdfkit-grayscale", content: "100"}
+    
+    %title
+      = "HipChat Transcript for #{@room.name}"
+
+    / Bootstrap Core CSS
+
+    %script{:src => "https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"}
+    
+    %link{:rel => "stylesheet", :href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", :crossorigin => "anonymous"}
+
+
+    %script{:src => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js", :crossorigin => "anonymous"}  
+  
+    / HTML5 Shim and Respond.js IE8 Support of HTML5 elements and media queries.
+    / WARNING: Respond.js doesn't work if you view the page using file://
+    /[if IE9]
+      %script{:src => "https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"}
+      %script{:src => "https://oss.maxcdn.com/libs/respond.js/1.42/respond.min.js"}
+
+  %body
+  
+    .container
+      .col-md-10.col-md-offset-1
+      
+        %h2  
+          = "Transcript for #{@room.name}"
+        %div{:class => "small text-muted", :style => "margin-bottom:2em;"}
+          = "#{@messages.count} total messages, "
+          = "from #{Date.parse(@messages.last["UserMessage"]["timestamp"])}"
+          = "to #{Date.parse(@messages.first["UserMessage"]["timestamp"])}"
+        - @messages.each do |message|
+
+          - begin
+            - message_text = message["UserMessage"]["message"]
+            - message_timestamp = message["UserMessage"]["timestamp"]
+            - user_name = message["UserMessage"]["sender"]["name"]
+           
+            %strong
+              = user_name
+            %span{:class => "small text-muted "}
+              (
+              = DateTime.parse(message_timestamp).strftime("%Y-%m-%d @ %H:%M")
+              )
+        
+            %pre{:style => "border: 0; background-color: transparent;padding:.1em;white-space: pre-wrap;"}
+              = message_text
+
+            
+            %hr
+
+          - rescue => e
+            = e.inspect
+            = message.inspect
+

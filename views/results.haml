@@ -1,0 +1,20 @@
+%table.table{:class => "table", :style => "margin-top:2em;"}
+  %th
+    Room
+ 
+  %th
+  %th
+  - @rooms.each do |r|
+    %tr
+      %td
+        %a{:href => "/room/#{r.id}"}
+          = r.name
+     
+      %td
+        %a{:class => "btn btn-primary pull-right btn-xs", :type => "button", :role => "button", :style => "margin-right:.5em;", :href => "/archive/#{r.id}"}
+          Zip
+
+        %a{:class => "btn btn-primary btn-xs pull-right", :type => "button", :role => "button", :style => "margin-right:.5em;", :href => "/markdown/#{r.id}"}
+          Markdown
+        
+

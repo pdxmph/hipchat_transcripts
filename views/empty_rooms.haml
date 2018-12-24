@@ -1,0 +1,39 @@
+!!! 5
+%html{:lang => "en"}
+  %head
+    %meta{:charset => "utf-8"}/
+    %meta{"http-equiv" => "X-UA-Compatible", :content => "IE-edge"}/
+    %meta{"name" => "viewport", :content => "width=device-width, initial-scale=1"}/
+    %meta{"name" => "description", "content" => ""}/
+    %meta{"name" => "author", "content" => ""}/
+
+    %title
+      HipChat Transcriperator 
+
+    / Bootstrap Core CSS
+
+    %script{:src => "https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"}
+    %link{:rel => "stylesheet", :href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", :crossorigin => "anonymous"}
+    %script{:src => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js", :crossorigin => "anonymous"}  
+ 
+    / HTML5 Shim and Respond.js IE8 Support of HTML5 elements and media queries.
+    / WARNING: Respond.js doesn't work if you view the page using file://
+    /[if IE9]
+      %script{:src => "https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"}
+      %script{:src => "https://oss.maxcdn.com/libs/respond.js/1.42/respond.min.js"}
+
+  %body
+    = haml :navbar
+    
+    .container{:style => "margin-top: 10%;"}
+      .col-md-8.col-md-offset-2
+        .panel.panel-primary
+          .panel-heading
+            %h4
+              = "No messages found for the room #{@room.name}"
+
+          .panel-body
+            Sorry. Couldn't find any messages for this room. That probably means that there weren't any messages in this room during the period covered by the export you're using. 
+            %br 
+            %a{:href => "/"}
+              Go home
