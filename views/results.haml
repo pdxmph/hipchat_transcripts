@@ -4,17 +4,17 @@
  
   %th
   %th
-  - @rooms.each do |r|
+  - @rooms_list.each do |r|
     %tr
       %td
-        %a{:href => "/room/#{r.id}"}
-          = r.name
+        %a{:href => "/room/#{r["Room"]["id"]}"}
+          = r["Room"]["name"]
      
       %td
-        %a{:class => "btn btn-primary pull-right btn-xs", :type => "button", :role => "button", :style => "margin-right:.5em;", :href => "/archive/#{r.id}"}
+        %a{:class => "btn btn-primary pull-right btn-xs", :type => "button", :role => "button", :style => "margin-right:.5em;", :href => "/archive/#{r["Room"]["id"]}"}
           Zip
 
-        %a{:class => "btn btn-primary btn-xs pull-right", :type => "button", :role => "button", :style => "margin-right:.5em;", :href => "/markdown/#{r.id}"}
+        %a{:class => "btn btn-primary btn-xs pull-right", :type => "button", :role => "button", :style => "margin-right:.5em;", :href => "/markdown/#{r["Room"]["id"]}"}
           Markdown
         
 

@@ -9,10 +9,9 @@
     %meta{name: "pdfkit-page_size", content: "Letter"}
     %meta{name: "pdfkit-grayscale", content: "100"}
     
-    %title
-      = "HipChat Transcript for #{@room.name}"
 
-    / Bootstrap Core CSS
+    %title
+      = "HipChat Transcripts for #{@room.name}"
 
     %script{:src => "https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"}
     
@@ -28,12 +27,12 @@
       %script{:src => "https://oss.maxcdn.com/libs/respond.js/1.42/respond.min.js"}
 
   %body
-  
     .container
       .col-md-10.col-md-offset-1
-      
+        
         %h2  
           = "Transcript for #{@room.name}"
+
         %div{:class => "small text-muted", :style => "margin-bottom:2em;"}
           = "#{@messages.count} total messages, "
           = "from #{Date.parse(@messages.last["UserMessage"]["timestamp"])}"

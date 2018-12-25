@@ -2,13 +2,16 @@
 
 require 'json'
 require 'sinatra'
-require File.dirname(__FILE__) + '/db'
 require 'zip'
 require 'haml'
+require 'ostruct'
 
 users_file = File.read("hipchat_export/users.json")
 rooms_file = File.read("hipchat_export/rooms.json")
 archive_dir = File.dirname(__FILE__) + '/transcripts'
+
+set :rooms, JSON.parse(rooms_file)
+set :users, JSON.parse(users_file)
 
 
 def room_messages(room_id) 
@@ -18,6 +21,27 @@ def room_messages(room_id)
   return messages
 end
 
+def find_rooms(room)
+  @rooms_list = settings.rooms.select {|r| r["Room"]["name"].downcase.include?(room.downcase) }
+  return @rooms_list
+end
+
+def get_room(room_id)
+  room_obj = OpenStruct.new
+  room = settings.rooms.detect { |r| r["Room"]["id"] == room_id }["Room"]
+  room_obj.name = room["name"]
+  room_obj.id = room["id"]
+  return room_obj
+end
+
+# This is the route for search results
+post "/rooms" do
+  room = params[:room].downcase
+  @rooms_list = settings.rooms.select {|r| r["Room"]["name"].downcase.include?(room) }
+  haml :results, :layout => false
+end
+
+
 get '/' do
   haml :index
 end
@@ -25,7 +49,7 @@ end
 get '/markdown/:id' do
   content_type 'text/plain;charset=utf8'
   room_id = params[:id]
-  @room = Room.find(room_id)
+  @room = get_room(params['id'].to_i)
   @messages = room_messages(room_id)
   if @messages.empty? 
     haml :empty_rooms
@@ -35,22 +59,19 @@ get '/markdown/:id' do
 end
 
 get '/room/:id' do
-  room_id = params[:id]
-  @room = Room.find(room_id)
-  @messages = room_messages(room_id)
-
+  @room = get_room(params['id'].to_i)
+  @messages = room_messages(params['id'])
   if @messages.empty?
     haml :empty_rooms
   else
     haml :room
   end
-
 end
 
 
 get '/archive/:id' do 
-  room_id = params[:id]
-  room = Room.find(room_id)  
+  room_id = params[:id].to_i
+  room = get_room(room_id)
   messages = room_messages(room_id)
   md_template = File.read(File.dirname(__FILE__) + "/views/markdown.haml")
   html_template = File.read(File.dirname(__FILE__) + "/views/room.haml")
@@ -86,24 +107,9 @@ get '/archive/:id' do
     end
   end
   
-
- send_file zipfile_name, :filename => transcript_zip_name, :type => 'Application/octet-stream'
-
+  send_file zipfile_name, :filename => transcript_zip_name, :type => 'Application/octet-stream'
   
   halt 200
 end
 
-post "/rooms" do
-  room = params[:room]
-  find_rooms(room).to_json
-  haml :results, :layout => false
-end
 
-
-
-
-
-def find_rooms(room)
-    @rooms =  Room.where("name LIKE ?", "%#{room}%")
-    @rooms
-end

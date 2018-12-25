@@ -1,0 +1,89 @@
+!!! 5
+%html{:lang => "en"}
+  %head
+    %meta{:charset => "utf-8"}/
+    %meta{"http-equiv" => "X-UA-Compatible", :content => "IE-edge"}/
+    %meta{"name" => "viewport", :content => "width=device-width, initial-scale=1"}/
+    %meta{"name" => "description", "content" => ""}/
+    %meta{"name" => "author", "content" => ""}/
+
+    %title
+      Reclassr: 
+
+    / Bootstrap Core CSS
+    %link{:href => "/css/bootstrap.min.css", :rel => :stylesheet}/
+    %link{:href => "/css/bootstrap.icon-large.min.css", :rel => :stylesheet}/
+
+    / Custom Styles for this template
+    %link{:href => "/css/starter-template.css", :rel => :stylesheet}/
+
+    / HTML5 Shim and Respond.js IE8 Support of HTML5 elements and media queries.
+    / WARNING: Respond.js doesn't work if you view the page using file://
+    /[if IE9]
+      %script{:src => "https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"}
+      %script{:src => "https://oss.maxcdn.com/libs/respond.js/1.42/respond.min.js"}
+
+  %body
+    = haml :navbar
+      
+    .container{:style => "margin-top:1em;"}
+      .col-md-8.col-md-offset-2
+    .container{:style => "margin-top:1em;"}
+      .col-md-8.col-md-offset-2
+        %h1{:style => "font-size:150%;"}
+          %strong= @room.name
+        %p
+        - if @room.person 
+          %strong Owned by
+          = @room.person.name
+        Created on   #{Time.at(@room.started).to_datetime}
+        %br 
+        %br
+        %button{:type => 'button', :class => @room.last_class }
+          Room was last used 
+          %nbsp
+          = @room.last_used
+          %nbsp 
+          ago.
+    .container
+      .col-md-8.col-md-offset-2
+        %form{:action => "/room/#{@room.id}/update", :method => "post", :name => "classify"}
+          %h3
+            Currently #{@current_state}. Move to:
+          %p
+            %input{:name => "reclass_to", :onclick => "this.form.submit();", :type => "radio", :value => "Social"}>
+            %nbsp
+            Social
+            %br/
+            %input{:name => "reclass_to", :onclick => "this.form.submit();", :type => "radio", :value => "Operational"}/
+            %nbsp 
+            Operational
+            %br/
+            %input{:name => "reclass_to", :onclick => "this.form.submit();", :type => "radio", :value => "Affinity"}/
+            %nbsp 
+            Affinity
+            %br/
+            %input{:name => "reclass_to", :onclick => "this.form.submit();", :type => "radio", :value => "Deprecated"}/
+            %nbsp 
+            Deprecated
+            %br/
+            - if @room.reclass_to || @room.reclass_to == ""
+              %input{:name => "reclass_to", :onclick => "this.form.submit();", :type => "radio", :value => "#{@room.reclass_to}"}>
+              %nbsp
+              Keep in #{@room.reclass_to}
+              %br
+              
+            %hr
+            
+            .col-md-4
+              %p
+                - if @room.previous
+                  %a{:href => "/room/#{@room.previous.id}", :class => "btn btn-primary", :role => "button"}
+                    %span.glyphicon.glyphicon-backward
+                    Previous
+            .col-md-4.col-md-offset-4
+              %p
+                - if @room.next
+                  %a{:href => "/room/#{@room.next.id}", :class => "btn btn-primary", :role => "button"}
+                    Next  
+                    %span.glyphicon.glyphicon-forward
