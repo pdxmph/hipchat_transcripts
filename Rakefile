@@ -19,8 +19,24 @@ end
 desc "Run the app at http://localhost:4567 "
 task :run do 
   app = File.dirname(__FILE__) + '/app.rb'
-  puts "\n\n\nGo to http://localhost:4567 in your browser. ^c to exit. \n\n\n"
-  `bundle exec nohup #{app} -p 4567  >> /dev/null`
+  if Gem::Platform.local.os == "darwin"
+    `bundle exec nohup ruby app.rb >> ./log 2>&1 &`
+    puts "\n\n** Run `rake stop` to kill the app when you're done.**\n\n\nOpening http://localhost:4567 in your browser..."
+    sleep 3
+    `open http://localhost:4567`
+  else
+    puts "\n\n\nGo to http://localhost:4567 in your browser. ^c to exit. \n\n\n"
+    `bundle exec nohup #{app} -p 4567  >> /dev/null`
+  end
+end
+
+desc "Stop the running app."
+task :stop do
+  begin
+    Process.kill 'TERM', File.read('.process.pid').to_i
+  rescue => e
+    puts e.inspect
+  end
 end
 
 

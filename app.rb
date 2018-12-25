@@ -6,6 +6,9 @@ require 'zip'
 require 'haml'
 require 'ostruct'
 
+# Enable a rake kill task
+File.open('.process.pid', 'w') {|f| f.write Process.pid }
+
 
 config_file  = File.read('slack_config.json')
 config = JSON.parse(config_file)

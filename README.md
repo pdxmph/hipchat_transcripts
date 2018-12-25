@@ -1,5 +1,7 @@
 # HipChat Transcript Generator
 
+<img width="800" alt="HipChat transcripterator" src="https://user-images.githubusercontent.com/283428/50415376-7d1a2180-07cf-11e9-8c22-5f3b9ea254ef.png">
+
 This is a small, dumb Sinatra app that:
 
 1. Automates the process of downloading and unpacking a HipChat archive from the HipChat admin console. 
