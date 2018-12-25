@@ -62,7 +62,7 @@ get '/' do
 end
 
 get '/markdown/:id' do
-  content_type 'text/plain;charset=utf8'
+  # content_type 'text/plain;charset=utf8'
   room_id = params[:id]
   @room = get_room(params['id'].to_i)
   @messages = room_messages(room_id)
