@@ -24,7 +24,6 @@ It does everything in memory (no database backend). All you need is to point it 
   * `hipchat_archive_location`: The path to your HipChat archive (no trailing slash)
   * `hipchat_archive_name`: e.g. `hipchat-28367-2018-12-19_13-49-30.tar.gz.aes`
   * `tarball_name`:  e.g. `hipchat-28367-2018-12-19_13-49-30.tar.gz`
-  * `google_spreadsheet_id`: the i.d. of your Google spreadsheet
 
 Once you've configured all that, you should be able to:
 
