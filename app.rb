@@ -79,7 +79,7 @@ get '/room/:id' do
   if @messages.empty?
     haml :empty_rooms
   else
-    haml :room
+    haml :show
   end
 end
 

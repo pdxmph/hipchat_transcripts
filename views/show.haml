@@ -6,17 +6,20 @@
     %meta{"name" => "viewport", :content => "width=device-width, initial-scale=1"}/
     %meta{"name" => "description", "content" => ""}/
     %meta{"name" => "author", "content" => ""}/
+    %meta{name: "pdfkit-page_size", content: "Letter"}
+    %meta{name: "pdfkit-grayscale", content: "100"}
+    
 
     %title
-      Reclassr: 
+      = "HipChat Transcripts for #{@room.name}"
 
-    / Bootstrap Core CSS
-    %link{:href => "/css/bootstrap.min.css", :rel => :stylesheet}/
-    %link{:href => "/css/bootstrap.icon-large.min.css", :rel => :stylesheet}/
+    %script{:src => "https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"}
+    
+    %link{:rel => "stylesheet", :href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", :crossorigin => "anonymous"}
 
-    / Custom Styles for this template
-    %link{:href => "/css/starter-template.css", :rel => :stylesheet}/
 
+    %script{:src => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js", :crossorigin => "anonymous"}  
+  
     / HTML5 Shim and Respond.js IE8 Support of HTML5 elements and media queries.
     / WARNING: Respond.js doesn't work if you view the page using file://
     /[if IE9]
@@ -25,65 +28,38 @@
 
   %body
     = haml :navbar
-      
-    .container{:style => "margin-top:1em;"}
-      .col-md-8.col-md-offset-2
-    .container{:style => "margin-top:1em;"}
-      .col-md-8.col-md-offset-2
-        %h1{:style => "font-size:150%;"}
-          %strong= @room.name
-        %p
-        - if @room.person 
-          %strong Owned by
-          = @room.person.name
-        Created on   #{Time.at(@room.started).to_datetime}
-        %br 
-        %br
-        %button{:type => 'button', :class => @room.last_class }
-          Room was last used 
-          %nbsp
-          = @room.last_used
-          %nbsp 
-          ago.
-    .container
-      .col-md-8.col-md-offset-2
-        %form{:action => "/room/#{@room.id}/update", :method => "post", :name => "classify"}
-          %h3
-            Currently #{@current_state}. Move to:
-          %p
-            %input{:name => "reclass_to", :onclick => "this.form.submit();", :type => "radio", :value => "Social"}>
-            %nbsp
-            Social
-            %br/
-            %input{:name => "reclass_to", :onclick => "this.form.submit();", :type => "radio", :value => "Operational"}/
-            %nbsp 
-            Operational
-            %br/
-            %input{:name => "reclass_to", :onclick => "this.form.submit();", :type => "radio", :value => "Affinity"}/
-            %nbsp 
-            Affinity
-            %br/
-            %input{:name => "reclass_to", :onclick => "this.form.submit();", :type => "radio", :value => "Deprecated"}/
-            %nbsp 
-            Deprecated
-            %br/
-            - if @room.reclass_to || @room.reclass_to == ""
-              %input{:name => "reclass_to", :onclick => "this.form.submit();", :type => "radio", :value => "#{@room.reclass_to}"}>
-              %nbsp
-              Keep in #{@room.reclass_to}
-              %br
-              
-            %hr
+  
+    .container{:style => "margin-top:3em;"}
+      .col-md-10.col-md-offset-1
+                
+        %h2  
+          = "Transcript for #{@room.name}"
+
+        %div{:class => "small text-muted", :style => "margin-bottom:2em;"}
+          = "#{@messages.count} total messages, "
+          = "from #{Date.parse(@messages.last["UserMessage"]["timestamp"])}"
+          = "to #{Date.parse(@messages.first["UserMessage"]["timestamp"])}"
+        - @messages.each do |message|
+
+          - begin
+            - message_text = message["UserMessage"]["message"]
+            - message_timestamp = message["UserMessage"]["timestamp"]
+            - user_name = message["UserMessage"]["sender"]["name"]
+           
+            %strong
+              = user_name
+            %span{:class => "small text-muted "}
+              (
+              = DateTime.parse(message_timestamp).strftime("%Y-%m-%d @ %H:%M")
+              )
+        
+            %pre{:style => "border: 0; background-color: transparent;padding:.1em;white-space: pre-wrap;"}
+              = message_text
+
             
-            .col-md-4
-              %p
-                - if @room.previous
-                  %a{:href => "/room/#{@room.previous.id}", :class => "btn btn-primary", :role => "button"}
-                    %span.glyphicon.glyphicon-backward
-                    Previous
-            .col-md-4.col-md-offset-4
-              %p
-                - if @room.next
-                  %a{:href => "/room/#{@room.next.id}", :class => "btn btn-primary", :role => "button"}
-                    Next  
-                    %span.glyphicon.glyphicon-forward
+            %hr
+
+          - rescue => e
+            = e.inspect
+            = message.inspect
+
