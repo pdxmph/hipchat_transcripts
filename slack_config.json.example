@@ -1,0 +1,9 @@
+{
+		"hipchat_archive_password": "PASSWORD FROM HIPCHAT EXPORT TOOL",
+		"hipchat_archive_url": "https://s3.amazonaws.com/uploads.hipchat.com/123456789.tar.gz.aes",
+    "hipchat_archive_location": "/Users/JohnDoe/slack",
+		"hipchat_archive_name": "hipchat-1234-2018-01-01_00-01-00.tar.gz.aes",
+    "tarball_name": "hipchat-1234-2018-01-01_00-01-00.tar.gz",
+}
+
+

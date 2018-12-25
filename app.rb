@@ -6,16 +6,28 @@ require 'zip'
 require 'haml'
 require 'ostruct'
 
-users_file = File.read("hipchat_export/users.json")
-rooms_file = File.read("hipchat_export/rooms.json")
-archive_dir = File.dirname(__FILE__) + '/transcripts'
 
+config_file  = File.read('slack_config.json')
+config = JSON.parse(config_file)
+
+archive_uri = URI.parse(config["hipchat_archive_url"])
+archive_filename = File.basename(archive_uri.path)
+archive_dir_name = File.basename(archive_filename, ".tar.gz.aes")
+
+set :export_root, config["hipchat_archive_location"] + "/#{archive_dir_name}"
+
+users_file = File.read("#{settings.export_root}/users.json")
+rooms_file = File.read("#{settings.export_root}/rooms.json")
 set :rooms, JSON.parse(rooms_file)
 set :users, JSON.parse(users_file)
 
 
+
+# Where do we put the exports? 
+archive_dir = File.dirname(__FILE__) + '/transcripts'
+
 def room_messages(room_id) 
-  room_file = File.read("hipchat_export/rooms/#{room_id}/history.json")
+  room_file = File.read("#{settings.export_root}/rooms/#{room_id}/history.json")
   messages =  JSON.parse(room_file)
   messages.select! { |m| m["UserMessage"] }
   return messages
@@ -81,7 +93,7 @@ get '/archive/:id' do
   transcript_zip_name = "#{transcript_dir}/#{transcript_file_name}_archive.zip"  
 
 
-  Dir.mkdir(transcript_dir) unless File.directory?(transcript_dir)
+  FileUtils.mkdir_p(transcript_dir) unless File.directory?(transcript_dir)
     
   # Save the HTML template to a file
   output = Haml::Engine.new(html_template)
