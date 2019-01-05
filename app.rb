@@ -88,7 +88,7 @@ get '/archive/:id' do
   room_id = params[:id].to_i
   room = get_room(room_id)
   messages = room_messages(room_id)
-  md_template = File.read(File.dirname(__FILE__) + "/views/markdown.haml")
+  md_template = File.read(File.dirname(__FILE__) + "/views/raw_markdown.haml")
   html_template = File.read(File.dirname(__FILE__) + "/views/room.haml")
   transcript_file_name = room.name.gsub(/\W{1,}/, "_").downcase
   transcript_dir = File.dirname(__FILE__) + "/transcripts/#{transcript_file_name}"
@@ -100,7 +100,7 @@ get '/archive/:id' do
     
   # Save the HTML template to a file
   output = Haml::Engine.new(html_template)
-  html = output.render(Object.new, { :@room => room, :@messages => messages })
+  html = output.render(Object.new, {:@room => room, :@messages => messages })
   html_file = transcript_file + "_transcript.html"
   (input_files ||= []) << html_file
   File.write(html_file, html)

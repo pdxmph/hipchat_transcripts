@@ -1,0 +1,22 @@
+= "# HipChat Transcript for #{@room.name}\n"
+= "_Generated #{Date.today}_\n"
+= "**#{@messages.count} total messages, from #{Date.parse(@messages.last["UserMessage"]["timestamp"])} to #{Date.parse(@messages.first["UserMessage"]["timestamp"])}**"
+
+= "\r\r\r"
+= "---"
+= "\r\r\r"
+- @messages.each do |message|
+
+  - begin
+    - message_text = message["UserMessage"]["message"]
+    - message_timestamp = message["UserMessage"]["timestamp"]
+    - user_name = message["UserMessage"]["sender"]["name"]
+
+    = "**#{user_name}** #{DateTime.parse(message_timestamp).strftime("%Y-%m-%d @ %H:%M")}:\r  " 
+    = "\t#{message_text}"
+    = "\n"
+    = "---\r\r"
+  - rescue => e
+    = e.inspect
+    = message.inspect
+
