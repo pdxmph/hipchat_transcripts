@@ -4,3 +4,5 @@ Gemfile.lock
 transcripts/ 
 .process.pid
 log
+.bundle/
+vendor/
